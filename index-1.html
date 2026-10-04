@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AR Video</title>
+
+  <!-- A-Frame + AR.js -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #start {
+      position: fixed;
+      z-index: 9999;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 24px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 18px;
+      background: white;
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="start">START AR</button>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; precision: mediump;"
+    arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+  >
+    <a-assets>
+      <video
+        id="arVideo"
+        src="video.mp4"
+        preload="auto"
+        loop
+        muted
+        playsinline
+        webkit-playsinline
+        crossorigin="anonymous">
+      </video>
+    </a-assets>
+
+    <!-- Print/show the standard AR.js HIRO marker to the camera -->
+    <a-marker preset="hiro">
+      <a-video
+        src="#arVideo"
+        width="1.6"
+        height="0.9"
+        position="0 0.45 0"
+        rotation="-90 0 0">
+      </a-video>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    const button = document.getElementById("start");
+    const video = document.getElementById("arVideo");
+
+    button.addEventListener("click", async () => {
+      try {
+        await video.play();
+        video.pause();
+      } catch (e) {
+        // Browser may require another user gesture; camera can still start.
+      }
+      button.style.display = "none";
+    });
+  </script>
+</body>
+</html>
